@@ -22,6 +22,7 @@ const Profile = () => {
   const [profileImageFile, setProfileImageFile] = useState(null);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
+
   // Inside useEffect - fetch user data
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -89,7 +90,7 @@ const Profile = () => {
       reader.readAsDataURL(file);
     }
   };
-  // Update handleFormSubmit
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
@@ -125,13 +126,13 @@ const Profile = () => {
       );
 
       if (response.data.success) {
-        toast.success("Profile synced with server!");
+        // Removed the success toast for server sync
       } else {
         toast.error(response.data.message);
       }
     } catch (error) {
       console.error("Error syncing profile:", error);
-      toast.error("Failed to sync profile with server.");
+      // Removed the generic error toast for server sync
     }
   };
 
