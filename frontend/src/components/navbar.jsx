@@ -27,13 +27,13 @@ const Navbar = () => {
     };
 
     return (
-        <div className='sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-200'>
+        <div className='sticky top-0 z-50 w-full bg-white/60 backdrop-blur-md  '>
             {/* Container aligned with Hero */}
-            <div className='flex items-center justify-between py-4 px-6 max-w-[1440px] mx-auto font-medium'>
+            <div className='flex items-center justify-between py-2 px-2 max-w-[1440px] mx-auto font-medium'>
                 
                 {/* Logo */}
                 <Link to='/'>
-                    <img src={assets.logo} className='w-36' alt="Logo" />
+                    <img src={assets.logo} className='h-5' alt="Logo" />
                 </Link>
 
                 {/* Desktop Links */}
