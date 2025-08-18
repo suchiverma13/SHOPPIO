@@ -22,10 +22,10 @@ const Profile = () => {
   const [profileImageFile, setProfileImageFile] = useState(null);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
-  // Inside useEffect - fetch user data
+
   useEffect(() => {
     const fetchUserProfile = async () => {
-      // 1. First check localStorage
+      // 1. LocalStorage से check कर लेना
       const localProfile = localStorage.getItem("profileData");
       if (localProfile) {
         const data = JSON.parse(localProfile);
@@ -36,12 +36,13 @@ const Profile = () => {
         return;
       }
 
-      // 2. Fetch from backend if no localStorage
+      // 2. अगर token नहीं है तो backend call भी मत कर
       if (!token) {
         setLoading(false);
         return;
       }
 
+      // 3. Backend से fetch करना
       try {
         const response = await axios.post(
           `${backendUrl}/api/user/profile`,
@@ -60,7 +61,8 @@ const Profile = () => {
             nationality: fetchedUser.nationality || "",
           });
           setProfileImage(fetchedUser.profilePicture || null);
-          // Save to localStorage
+
+          // LocalStorage में save करना
           localStorage.setItem("profileData", JSON.stringify(fetchedUser));
         } else {
           toast.error(response.data.message);
@@ -80,31 +82,42 @@ const Profile = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Image upload handler (localStorage update भी यही करेगा)
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
       setProfileImageFile(file);
+
       const reader = new FileReader();
-      reader.onloadend = () => setProfileImage(reader.result);
+      reader.onloadend = () => {
+        setProfileImage(reader.result);
+
+        const updatedProfile = {
+          ...formData,
+          profilePicture: reader.result,
+        };
+        setFormData(updatedProfile);
+        localStorage.setItem("profileData", JSON.stringify(updatedProfile));
+      };
       reader.readAsDataURL(file);
     }
   };
-  // Update handleFormSubmit
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
-    // 1. Update localStorage immediately
+    // LocalStorage update
     const updatedProfile = {
       ...user,
       ...formData,
-      profilePicture: profileImage, // keep preview image
+      profilePicture: profileImage,
     };
     setUser(updatedProfile);
     localStorage.setItem("profileData", JSON.stringify(updatedProfile));
     setIsEditing(false);
     toast.success("Profile saved locally!");
 
-    // 2. Optional: send to backend asynchronously
+    // Backend update
     try {
       const formDataToSend = new FormData();
       formDataToSend.append("userId", user._id);
@@ -141,6 +154,7 @@ const Profile = () => {
         <p>Loading profile...</p>
       </div>
     );
+
   if (!user)
     return (
       <div className="not-logged-in-container">
@@ -170,7 +184,9 @@ const Profile = () => {
               <p className="text-gray-600 text-sm">Mobile Number</p>
             </div>
             <div className="stat-item p-4 bg-gray-100 rounded">
-              <p className="font-semibold text-black text-lg">{user.location || "N/A"}</p>
+              <p className="font-semibold text-black text-lg">
+                {user.location || "N/A"}
+              </p>
               <p className="text-gray-600 text-sm">Location</p>
             </div>
             <div className="stat-item p-4 bg-gray-100 rounded">
