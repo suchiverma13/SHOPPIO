@@ -1,0 +1,32 @@
+/* .category-bar {
+
+display: flex;
+  overflow-x: auto;
+  padding: 1rem;
+  gap: 16px;
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+}
+
+.category-item {
+  min-width: 80px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.category-item img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  margin-bottom: 4px;
+}
+
+.category-item:hover {
+  transform: scale(1.05);
+}
+
+.category-item p {
+  font-size: 0.85rem;
+  color: #333;
+} */
