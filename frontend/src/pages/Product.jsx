@@ -3,17 +3,18 @@ import { useParams } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/assets";
 import RelatedProducts from "../components/RelatedProducts";
+import { toast } from "react-toastify";
 
 const Product = () => {
   const { productId } = useParams();
-  const { products, currency, addToCart } = useContext(ShopContext);
+  const { products, currency, addToCart, token } = useContext(ShopContext);
   const [productData, setProductData] = useState(null);
   const [image, setImage] = useState("");
   const [size, setSize] = useState("");
 
   // Fetch product data based on productId
   useEffect(() => {
-    const product = products.find(item => item._id === productId);
+    const product = products.find((item) => item._id === productId);
     if (product) {
       setProductData(product);
       setImage(product.image[0]);
@@ -31,10 +32,8 @@ const Product = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
       {/* Product Section */}
       <div className="flex flex-col lg:flex-row gap-12">
-        
         {/* Product Images */}
         <div className="flex gap-4 lg:flex-row flex-col w-full lg:w-1/2">
-          
           {/* Vertical Thumbnails */}
           <div className="flex flex-row lg:flex-col gap-3 overflow-x-auto lg:overflow-y-auto w-full lg:w-[80px]">
             {productData.image.map((img, idx) => (
@@ -96,8 +95,10 @@ const Product = () => {
                 <button
                   key={idx}
                   onClick={() => setSize(s)}
-                  className={`px-4 py-2 border rounded-md transition-all duration-200 hover:border-orange-500 ${
-                    s === size ? "border-orange-500 bg-orange-50" : "border-gray-300"
+                  className={`px-4 py-2 border cursor-pointer rounded-md transition-all duration-200 hover:border-orange-500 ${
+                    s === size
+                      ? "border-orange-500 bg-orange-50"
+                      : "border-gray-300"
                   }`}
                 >
                   {s}
@@ -108,8 +109,19 @@ const Product = () => {
 
           {/* Add to Cart */}
           <button
-            onClick={() => addToCart(productData._id, size)}
-            className="mt-6 bg-black text-white py-3 px-8 rounded-md hover:bg-gray-800 transition-colors"
+            onClick={() => {
+              if (!token) {
+                toast.error("Not authorized, login again", { autoClose: 2000 });
+                return;
+              }
+              if (!size) {
+                toast.error("Please select a size", { autoClose: 2000 });
+                return;
+              }
+              addToCart(productData._id, size);
+              toast.success("Item added to cart!", { autoClose: 2000 });
+            }}
+            className="mt-6 bg-black cursor-pointer text-white py-3 px-8 rounded-md hover:bg-gray-800 transition-colors"
           >
             Add to Cart
           </button>
@@ -134,8 +146,9 @@ const Product = () => {
         <div className="mt-6 text-gray-600 space-y-4">
           <p>
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae ab
-            assumenda odit facere suscipit, accusamus natus perspiciatis mollitia
-            possimus obcaecati ea illo enim sapiente saepe id autem ipsa.
+            assumenda odit facere suscipit, accusamus natus perspiciatis
+            mollitia possimus obcaecati ea illo enim sapiente saepe id autem
+            ipsa.
           </p>
           <p>
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ullam
