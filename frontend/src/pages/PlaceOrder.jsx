@@ -6,8 +6,11 @@ import { ShopContext } from "../context/ShopContext";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { useEffect } from "react"; // ऊपर add कर
 
 const PlaceOrder = () => {
+  
+  
   const [method, setMethod] = useState("cod");
   const {
     navigate,
@@ -32,6 +35,7 @@ const PlaceOrder = () => {
     phone: "",
   });
 
+  
   // Check if cart is empty
   const isCartEmpty =
     Object.keys(cartItems).length === 0 ||
@@ -135,6 +139,13 @@ const PlaceOrder = () => {
       toast.error(error.message);
     }
   };
+
+  const [showPopup, setShowPopup] = useState(false);
+  useEffect(() => {
+    if (!token) {
+      setShowPopup(true);
+    }
+  }, [token]);
 
   if (isCartEmpty)
     return (
@@ -296,12 +307,14 @@ const PlaceOrder = () => {
                   method === "cod" ? "bg-green-400" : ""
                 }`}
               ></span>
-              <p className="text-black-500 text-sm font-medium">Cash on Delivery</p>
+              <p className="text-black-500 text-sm font-medium">
+                Cash on Delivery
+              </p>
             </div>
           </div>
           <button
             type="submit"
-            className="mt-6 w-full bg-black text-white py-3 rounded hover:bg-gray-800 transition-colors"
+            className="mt-6 w-full cursor-pointer bg-black text-white py-3 rounded hover:bg-gray-800 transition-colors"
           >
             PLACE ORDER
           </button>

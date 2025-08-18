@@ -32,7 +32,7 @@ const OurTerms = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ delay: i * 0.1 }}
-              className="rounded-2xl border border-gray-100 bg-gray-50 p-8 text-center shadow-sm hover:shadow-md transition"
+              className="rounded-2xl border border-gray-100 cursor-pointer bg-gray-50 p-8 text-center shadow-sm hover:shadow-md transition"
             >
               <div className="mx-auto mb-4 w-16 h-16 grid place-items-center rounded-full bg-white shadow">
                 <img

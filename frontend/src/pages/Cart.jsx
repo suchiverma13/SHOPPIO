@@ -119,7 +119,7 @@ const Cart = () => {
           <div className="text-end mt-6">
             <button
               onClick={() => navigate("/place-order")}
-              className="bg-black text-white text-sm px-8 py-3 rounded hover:bg-gray-800 transition-colors"
+              className="bg-black cursor-pointer text-white text-sm px-8 py-3 rounded hover:bg-gray-800 transition-colors"
             >
               PROCEED TO CHECKOUT
             </button>
