@@ -23,9 +23,10 @@ const Profile = () => {
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
+  // Inside useEffect - fetch user data
   useEffect(() => {
     const fetchUserProfile = async () => {
-      // 1. LocalStorage से check कर लेना
+      // 1. First check localStorage
       const localProfile = localStorage.getItem("profileData");
       if (localProfile) {
         const data = JSON.parse(localProfile);
@@ -36,13 +37,12 @@ const Profile = () => {
         return;
       }
 
-      // 2. अगर token नहीं है तो backend call भी मत कर
+      // 2. Fetch from backend if no localStorage
       if (!token) {
         setLoading(false);
         return;
       }
 
-      // 3. Backend से fetch करना
       try {
         const response = await axios.post(
           `${backendUrl}/api/user/profile`,
@@ -61,8 +61,7 @@ const Profile = () => {
             nationality: fetchedUser.nationality || "",
           });
           setProfileImage(fetchedUser.profilePicture || null);
-
-          // LocalStorage में save करना
+          // Save to localStorage
           localStorage.setItem("profileData", JSON.stringify(fetchedUser));
         } else {
           toast.error(response.data.message);
@@ -82,23 +81,12 @@ const Profile = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Image upload handler (localStorage update भी यही करेगा)
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
       setProfileImageFile(file);
-
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileImage(reader.result);
-
-        const updatedProfile = {
-          ...formData,
-          profilePicture: reader.result,
-        };
-        setFormData(updatedProfile);
-        localStorage.setItem("profileData", JSON.stringify(updatedProfile));
-      };
+      reader.onloadend = () => setProfileImage(reader.result);
       reader.readAsDataURL(file);
     }
   };
@@ -106,18 +94,18 @@ const Profile = () => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
-    // LocalStorage update
+    // 1. Update localStorage immediately
     const updatedProfile = {
       ...user,
       ...formData,
-      profilePicture: profileImage,
+      profilePicture: profileImage, // keep preview image
     };
     setUser(updatedProfile);
     localStorage.setItem("profileData", JSON.stringify(updatedProfile));
     setIsEditing(false);
     toast.success("Profile saved locally!");
 
-    // Backend update
+    // 2. Optional: send to backend asynchronously
     try {
       const formDataToSend = new FormData();
       formDataToSend.append("userId", user._id);
@@ -138,13 +126,12 @@ const Profile = () => {
       );
 
       if (response.data.success) {
-        toast.success("Profile synced with server!");
       } else {
         toast.error(response.data.message);
       }
     } catch (error) {
       console.error("Error syncing profile:", error);
-      toast.error("Failed to sync profile with server.");
+      // Removed the generic error toast for server sync
     }
   };
 
@@ -154,7 +141,6 @@ const Profile = () => {
         <p>Loading profile...</p>
       </div>
     );
-
   if (!user)
     return (
       <div className="not-logged-in-container">
@@ -184,9 +170,7 @@ const Profile = () => {
               <p className="text-gray-600 text-sm">Mobile Number</p>
             </div>
             <div className="stat-item p-4 bg-gray-100 rounded">
-              <p className="font-semibold text-black text-lg">
-                {user.location || "N/A"}
-              </p>
+              <p className="font-semibold text-black text-lg">{user.location || "N/A"}</p>
               <p className="text-gray-600 text-sm">Location</p>
             </div>
             <div className="stat-item p-4 bg-gray-100 rounded">

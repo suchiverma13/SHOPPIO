@@ -49,7 +49,7 @@ const Collection = () => {
     if (Subcategory.length > 0) {
       productsCopy = productsCopy.filter((item) =>
         Subcategory.includes(item.subCategory)
-      ); // Fixed field name
+      ); 
     }
 
     setFilterProducts(productsCopy);
