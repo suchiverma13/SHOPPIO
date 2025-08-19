@@ -7,7 +7,7 @@ const SideBar = () => {
     <aside className="w-60 min-h-screen bg-gray-50 border-r border-gray-300 shadow-sm p-4 hidden md:block">
       <nav className="flex flex-col gap-3">
         {[
-          { name: 'Add Items', to: 'add', icon: assets.add_icon },
+          { name: 'Add Items', to: '/', icon: assets.add_icon },
           { name: 'List Items', to: 'list', icon: assets.order_icon },
           { name: 'Orders', to: 'orders', icon: assets.order_icon },
         ].map((item) => (

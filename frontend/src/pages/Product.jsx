@@ -31,20 +31,20 @@ const Product = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
       {/* Product Section */}
-      <div className="flex flex-col lg:flex-row gap-12">
+      <div className="flex flex-col sm:flex-row gap-12">
         {/* Product Images */}
-        <div className="flex gap-4 lg:flex-row flex-col w-full lg:w-1/2">
+        <div className="flex flex-1 flex-col-reverse sm:flex-row gap-4">
           {/* Vertical Thumbnails */}
-          <div className="flex flex-row lg:flex-col gap-3 overflow-x-auto lg:overflow-y-auto w-full lg:w-[80px]">
-            {productData.image.map((img, idx) => (
+           <div className="flex sm:flex-col gap-2 overflow-x-auto sm:overflow-y-auto sm:w-1/5">
+            {productData.image.map((item, index) => (
               <img
-                key={idx}
-                src={img}
-                alt={productData.name}
-                onClick={() => setImage(img)}
-                className={`cursor-pointer rounded-md border transition-transform duration-200 hover:scale-105 ${
-                  img === image ? "border-orange-500" : "border-gray-300"
+                key={index}
+                src={item}
+                onClick={() => setImage(item)}
+                className={`w-20 h-20 object-cover border cursor-pointer ${
+                  image === item ? "border-black" : "border-gray-200"
                 }`}
+                alt="thumbnail"
               />
             ))}
           </div>
