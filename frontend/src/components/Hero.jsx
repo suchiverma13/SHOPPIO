@@ -9,19 +9,19 @@ const Hero = () => {
 
   const slides = [
     {
-      image: assets.Girl1,
-      title: 'SUMMER VIBES COLLECTION',
+      image: "https://plus.unsplash.com/premium_photo-1708110921398-1fc68e98eacc?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      title: 'WINTER VIBES COLLECTION',
       subtitle: 'Discover the latest trends in lightweight fashion.',
     },
     {
-      image: assets.Girl2,
+      image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       title: 'URBAN ELEGANCE',
       subtitle: 'Effortless style for the city dweller.',
     },
     {
-      image: assets.Girl3,
-      title: 'THE COZY ESSENTIALS',
-      subtitle: 'Comfort meets chic with our new knitwear.',
+      image: "https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?q=80&w=1025&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'",
+      title: 'SHOES',
+      subtitle: 'Comfort walk with our shoes.',
     },
   ];
 
@@ -33,7 +33,7 @@ const Hero = () => {
   }, [slides.length]);
 
   return (
-    <div className="relative w-full h-[80vh] overflow-hidden bg-black">
+    <div className="relative w-full mt-8 shadow-sm rounded-2xl h-[80vh] overflow-hidden bg-black">
       <AnimatePresence mode="wait">
         <motion.div
           key={currentIndex}
