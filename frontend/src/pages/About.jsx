@@ -4,7 +4,6 @@ import video from '../assets/video.mp4';
 const About = () => {
   return (
     <div className="px-6 sm:px-12 lg:px-24 py-16 bg-white font-sans">
-      {/* Story & Mission Section */}
       <div className="flex flex-col lg:flex-row items-center gap-12 mb-24">
         {/* Video */}
         <video
@@ -33,15 +32,12 @@ const About = () => {
           </p>
         </div>
       </div>
-
-      {/* Why Choose Us Section */}
       <div className="text-center mb-16">
         <h2 className="text-3xl font-semibold mb-12 text-gray-800">
           Why <span className="border-b-4 border-gray-900">Choose Us</span>
         </h2>
 
         <div className="flex flex-wrap justify-center gap-8">
-          {/* Quality Assurance */}
           <div className="flex-1 min-w-[250px] max-w-[300px] p-8 bg-gray-50 border border-gray-200 rounded-lg shadow-md transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
             <h4 className="text-xl font-semibold mb-3 text-gray-900">Quality Assurance</h4>
             <p className="text-gray-600 leading-relaxed">
@@ -49,8 +45,6 @@ const About = () => {
               stringent quality standards.
             </p>
           </div>
-
-          {/* Convenience */}
           <div className="flex-1 min-w-[250px] max-w-[300px] p-8 bg-gray-50 border border-gray-200 rounded-lg shadow-md transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
             <h4 className="text-xl font-semibold mb-3 text-gray-900">Convenience</h4>
             <p className="text-gray-600 leading-relaxed">
@@ -58,8 +52,6 @@ const About = () => {
               shopping has never been easier.
             </p>
           </div>
-
-          {/* Exceptional Customer Service */}
           <div className="flex-1 min-w-[250px] max-w-[300px] p-8 bg-gray-50 border border-gray-200 rounded-lg shadow-md transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
             <h4 className="text-xl font-semibold mb-3 text-gray-900">
               Exceptional Customer Service

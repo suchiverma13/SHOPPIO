@@ -126,7 +126,10 @@ const Profile = () => {
       );
 
       if (response.data.success) {
-        // Removed the success toast for server sync
+        toast.success("Profile updated successfully!");
+        // Update localStorage again to ensure it's in sync
+        localStorage.setItem("profileData", JSON.stringify(response.data.user));
+        setUser(response.data.user);
       } else {
         toast.error(response.data.message);
       }

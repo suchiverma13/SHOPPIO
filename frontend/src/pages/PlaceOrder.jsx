@@ -6,8 +6,7 @@ import { ShopContext } from "../context/ShopContext";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { useEffect } from "react"; // ऊपर add कर
-
+import { useEffect } from "react";
 const PlaceOrder = () => {
   
   
