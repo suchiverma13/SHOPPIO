@@ -18,10 +18,11 @@ import { ToastContainer } from "react-toastify";
 
 const App = () => {
   return (
-    <div>
+    <div className="">
         <ToastContainer />
       <Navbar />
-      <div className="px-15">
+
+      <div className="px-4 sm:px-[3vw] md:px-[5vw] lg:px-[6vw]">
         <SearchBar />
       <Routes>
         <Route path="/" element={<Home />} />

@@ -27,9 +27,9 @@ const Navbar = () => {
     };
 
     return (
-        <div className='sticky px-15 top-0 z-50 w-full bg-white/60 backdrop-blur-md shadow-sm'>
+        <div className='sticky sm:px-5 top-0 z-50 w-full bg-white/60 backdrop-blur-md shadow-sm'>
             {/* Container aligned with Hero */}
-            <div className='flex items-center justify-between py-2 px-2 max-w-[1440px] mx-auto font-medium'>
+            <div className='flex h-15 items-center justify-between py-2 px-2 max-w-[1440px] mx-auto font-medium'>
                 
                 {/* Logo */}
                 <Link to='/'>
