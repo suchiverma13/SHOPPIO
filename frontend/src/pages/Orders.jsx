@@ -1,37 +1,43 @@
-import React, { useContext, useEffect, useState } from "react";
-import { ShopContext } from "../context/ShopContext";
-import Title from "../components/Title";
-import axios from "axios";
+// frontend/src/pages/Orders.jsx
+
+import React, { useContext, useEffect, useState } from 'react';
+import { ShopContext } from '../context/ShopContext';
+import Title from '../components/Title';
 
 const Orders = () => {
   const { currency, backendUrl, token } = useContext(ShopContext);
   const [orderData, setOrderData] = useState([]);
 
   const statusColors = {
-    "order placed": "bg-gray-400",
-    "packing": "bg-blue-400",
-    "shipped": "bg-yellow-400",
-    "out for delivery": "bg-orange-400",
-    "delivered": "bg-green-500",
+    'order placed': 'bg-gray-400',
+    packing: 'bg-blue-400',
+    shipped: 'bg-yellow-400',
+    'out for delivery': 'bg-orange-400',
+    delivered: 'bg-green-500',
   };
 
   const loadOrderData = async () => {
     try {
       if (!token) return;
 
-      const response = await axios.post(
-        backendUrl + "/api/order/userorders",
-        {},
-        { headers: { token } }
-      );
+      const response = await fetch(backendUrl + '/api/order/userorders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          token,
+        },
+        body: JSON.stringify({}),
+      });
 
-      if (response.data.success) {
+      const data = await response.json();
+
+      if (data.success) {
         const allOrdersItem = [];
-        response.data.orders.forEach((order) => {
+        data.orders.forEach((order) => {
           order.items.forEach((item) => {
             allOrdersItem.push({
               ...item,
-              status: order.status.toLowerCase(),
+              status: order.status?.toLowerCase() || 'unknown',
               payment: order.payment,
               paymentMethod: order.paymentMethod,
               date: order.date,
@@ -62,7 +68,7 @@ const Orders = () => {
   return (
     <div className="border-t px-4 max-w-7xl mx-auto">
       <div className="text-2xl mb-6">
-        <Title text1={"MY"} text2={"ORDERS"} />
+        <Title text1={'MY'} text2={'ORDERS'} />
       </div>
 
       <div className="flex flex-col gap-6">
@@ -77,16 +83,17 @@ const Orders = () => {
               <div className="flex flex-col gap-1">
                 <p className="font-medium">{item.name}</p>
                 <div className="flex items-center gap-3 text-gray-700">
-                  <p>{currency}{item.price}</p>
+                  <p>
+                    {currency}
+                    {item.price}
+                  </p>
                   <p>Qty: {item.quantity}</p>
                   <p>Size: {item.size}</p>
                 </div>
                 <p className="text-gray-500 text-sm">
                   Date: {new Date(item.date).toLocaleDateString()}
                 </p>
-                <p className="text-gray-500 text-sm">
-                  Payment: {item.paymentMethod}
-                </p>
+                <p className="text-gray-500 text-sm">Payment: {item.paymentMethod}</p>
               </div>
             </div>
 
@@ -94,7 +101,7 @@ const Orders = () => {
             <div className="flex flex-col md:flex-row md:items-center md:gap-6 mt-2 md:mt-0">
               <div className="flex items-center gap-2">
                 <span
-                  className={`w-3 h-3 rounded-full ${statusColors[item.status] || "bg-gray-400"}`}
+                  className={`w-3 h-3 rounded-full ${statusColors[item.status] || 'bg-gray-400'}`}
                 ></span>
                 <p className="text-sm md:text-base font-medium capitalize">{item.status}</p>
               </div>

@@ -89,11 +89,24 @@ const PlaceOrder = () => {
       order_id: order.id,
       receipt: order.receipt,
       handler: async (PaymentResponse) => {
-        await axios.post(
-          backendUrl + "/api/order/verifyRazorpay",
-          { ...PaymentResponse, ...orderData },
-          { headers: { token } }
-        );
+        try {
+          // Backend ko payment verification ke liye call karte hain
+          const verifyResponse = await axios.post(
+            backendUrl + "/api/order/verifyRazorpay",
+            { ...PaymentResponse, ...orderData },
+            { headers: { token } }
+          );
+
+          if (verifyResponse.data.success) {
+            toast.success("Payment verified and order placed successfully!");
+            setCartItems({}); // cart empty karo frontend me
+            navigate("/orders"); // order summary page pe le jao
+          } else {
+            toast.error("Payment verified but order placement failed");
+          }
+        } catch (error) {
+          toast.error("Payment verification failed");
+        }
       },
     };
     new window.Razorpay(options).open();
@@ -322,7 +335,9 @@ const PlaceOrder = () => {
                   method === "cod" ? "bg-green-400" : ""
                 }`}
               ></span>
-              <p className="text-black-500 text-sm font-medium">Cash on Delivery</p>
+              <p className="text-black-500 text-sm font-medium">
+                Cash on Delivery
+              </p>
             </div>
           </div>
           <button

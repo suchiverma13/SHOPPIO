@@ -43,57 +43,62 @@ const placeOrder = async (req, res) => {
         res.json({ success: false, message: error.message });
     }
 };
-
 const placeOrderStripe = async (req, res) => {
-    try {
-        const { userId, items, amount, address } = req.body
-        const { origin } = req.headers;
-
-        const orderData = {
-            userId,
-            items,
-            address,
-            amount,
-            paymentMethod: "Stripe",
-            payment: false,
-            date: Date.now(),
-        }
-
-        const newOrder = new orderModel(orderData);
-        await newOrder.save()
-
-        const line_items = items.map((item) => ({
-            price_data: {
-                currency: currency,
-                product_data: {
-                    name: item.name
-                },
-                unit_amount: item.price * 100
-            },
-            quantity: item.quantity
-        }))
-        line_items.push({
-            price_data: {
-                currency: currency,
-                product_data: {
-                    name: "Delivery Charges"
-                },
-                unit_amount: deliveryCharge * 100
-            },
-            quantity: 1
-        })
-        const session = await stripe.checkout.sessions.create({
-            success_url: `${origin}/verify?success=true&orderId=${newOrder._id}`,
-            cancel_url: `${origin}/verify?success=false&orderId=${newOrder._id}`,
-            line_items,
-            mode: 'payment',
-        })
-        res.json({ success: true, session_url: session.url });
-    } catch (error) {
-        console.log(error);
-        res.json({ success: false, message: error.message })
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
     }
-}
+    const { items, amount, address } = req.body;
+    const { origin } = req.headers;
+
+    const orderData = {
+      userId,            // use authenticated user ID
+      items,
+      address,
+      amount,
+      paymentMethod: "Stripe",
+      payment: false,
+      date: Date.now(),
+    };
+
+    const newOrder = new orderModel(orderData);
+    await newOrder.save();
+
+    // Stripe session creation code...
+    const line_items = items.map((item) => ({
+      price_data: {
+        currency: 'inr',
+        product_data: {
+          name: item.name,
+        },
+        unit_amount: item.price * 100,
+      },
+      quantity: item.quantity,
+    }));
+    line_items.push({
+      price_data: {
+        currency: 'inr',
+        product_data: { name: "Delivery Charges" },
+        unit_amount: 10 * 100,
+      },
+      quantity: 1,
+    });
+
+    const session = await stripe.checkout.sessions.create({
+      success_url: `${origin}/verify?success=true&orderId=${newOrder._id}`,
+      cancel_url: `${origin}/verify?success=false&orderId=${newOrder._id}`,
+      line_items,
+      mode: "payment",
+    });
+
+    res.json({ success: true, session_url: session.url });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 //verify stripe
 const verifyStripe = async (req, res) => {
     const { orderId, success, userId } = req.body
@@ -140,11 +145,14 @@ const verifyRazorpay = async (req, res) => {
             razorpay_order_id,
             razorpay_payment_id,
             razorpay_signature,
-            userId,
             items,
             amount,
             address
         } = req.body;
+
+        const userId = req.user?.id; // Use authenticated user id, not body
+
+        if (!userId) return res.status(401).json({ success: false, message: "Unauthorized" });
 
         const body = razorpay_order_id + "|" + razorpay_payment_id;
         const expectedSignature = crypto
@@ -153,7 +161,7 @@ const verifyRazorpay = async (req, res) => {
             .digest('hex');
 
         if (expectedSignature !== razorpay_signature) {
-            return res.json({ success: false, message: "Invalid payment signature." });
+            return res.status(400).json({ success: false, message: "Invalid payment signature." });
         }
 
         const newOrder = new orderModel({
@@ -167,12 +175,13 @@ const verifyRazorpay = async (req, res) => {
         });
 
         await newOrder.save();
+
         await userModel.findByIdAndUpdate(userId, { cartData: {} });
 
-        res.json({ success: true, message: "Payment successful." });
+        res.json({ success: true, message: "Payment successful and order placed." });
     } catch (error) {
         console.log(error);
-        res.json({ success: false, message: error.message });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
@@ -187,15 +196,21 @@ const allorders = async (req, res) => {
     }
 };
 
+// Get orders for authenticated user
 const userorders = async (req, res) => {
-    try {
-        const { userId } = req.body;
-        const orders = await orderModel.find({ userId });
-        res.json({ success: true, orders });
-    } catch (error) {
-        console.log(error);
-        res.json({ success: false, message: error.message });
+  try {
+    const userId = req.user?.id;  // get userId from authenticated user
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Unauthorized' });
     }
+
+    // Find all orders by userId
+    const orders = await orderModel.find({ userId });
+    res.json({ success: true, orders });
+  } catch (error) {
+    console.error('Error fetching user orders:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
 };
 
 const updateStatus = async (req, res) => {
