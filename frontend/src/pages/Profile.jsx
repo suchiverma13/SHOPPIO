@@ -50,7 +50,11 @@ const Profile = () => {
             email: fetchedUser.email || "",
             phone: fetchedUser.phone || "",
             nationality: fetchedUser.nationality || "",
-            location: fetchedUser.location || { city: "", state: "", country: "" },
+            location: fetchedUser.location || {
+              city: "",
+              state: "",
+              country: "",
+            },
           });
           setProfileImage(fetchedUser.profilePicture || null);
 
@@ -184,14 +188,19 @@ const Profile = () => {
         {/* Left Content */}
         <div className="profile-left flex-1">
           <h3 className="text-2xl font-semibold mb-2">My Profile</h3>
-          <h1 className="text-3xl font-bold mb-3">{user.name || "Your Name Here"}</h1>
+          <h1 className="text-3xl font-bold mb-3">
+            {user.name || "Your Name Here"}
+          </h1>
           <p className="mb-6 text-gray-700 text-lg">
-            Hey <span className="font-semibold">{user.name || "User"}</span>! Welcome to Shoppio.
+            Hey <span className="font-semibold">{user.name || "User"}</span>!
+            Welcome to Shoppio.
           </p>
 
           <div className="user-stats grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="stat-item p-4 bg-gray-100 rounded">
-              <p className="font-semibold text-black text-lg">{user.phone || "N/A"}</p>
+              <p className="font-semibold text-black text-lg">
+                {user.phone || "N/A"}
+              </p>
               <p className="text-gray-600 text-sm">Mobile Number</p>
             </div>
             <div className="stat-item p-4 bg-gray-100 rounded">
@@ -203,7 +212,9 @@ const Profile = () => {
               <p className="text-gray-600 text-sm">Location</p>
             </div>
             <div className="stat-item p-4 bg-gray-100 rounded">
-              <p className="font-semibold text-black text-lg">{user.nationality || "N/A"}</p>
+              <p className="font-semibold text-black text-lg">
+                {user.nationality || "N/A"}
+              </p>
               <p className="text-gray-600 text-sm">Nationality</p>
             </div>
           </div>
@@ -219,7 +230,10 @@ const Profile = () => {
         {/* Right Content */}
         <div
           className="profile-right flex-shrink-0 cursor-pointer"
-          onClick={() => fileInputRef.current.click()}
+          onClick={() => {
+            toast.info("Update profile feature coming soon!");
+            fileInputRef.current.click();
+          }}
         >
           <div className="profile-image-container w-52 h-52 rounded-full overflow-hidden border-2 border-gray-300 relative">
             <img
