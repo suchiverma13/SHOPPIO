@@ -34,10 +34,10 @@ const About = () => {
         </p>
 
         <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mt-10 mb-2">
-          Careers at Forever
+          Careers at Shoppio
         </h3>
         <p className="text-base text-gray-700 leading-relaxed mb-6">
-          Learn more about our teams and job openings at Forever.
+          Learn more about our teams and job openings at Shoppio.
         </p>
 
         <button className="self-start px-8 py-3 bg-black text-white font-bold rounded-full shadow-md hover:bg-gray-800 hover:shadow-lg transition-all duration-300">

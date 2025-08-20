@@ -26,7 +26,7 @@ const About = () => {
 
           <h3 className="text-2xl font-bold mb-4 text-gray-800">Our Mission</h3>
           <p className="text-gray-600 leading-relaxed">
-            Our mission at Forever is to empower customers with choice, convenience,
+            Our mission at Shoppio is to empower customers with choice, convenience,
             and confidence. We're dedicated to providing a seamless shopping experience
             that exceeds expectations, from browsing and ordering to delivery and beyond.
           </p>
