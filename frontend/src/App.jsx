@@ -15,31 +15,37 @@ import SearchBar from "./components/SearchBar";
 import Profile from "./pages/Profile";
 import Verify from "./pages/Verify";
 import { ToastContainer } from "react-toastify";
+import Chatbot from "./chatbot/chatbot";
 
 const App = () => {
   return (
     <div className="">
-        <ToastContainer />
       <Navbar />
+      <SearchBar />
+      <ToastContainer
+        position="top-right"
+        toastClassName={() =>
+          "relative flex p-5 sm:px-7 rounded-md justify-between overflow-hidden cursor-pointer shadow-lg bg-white text-black"
+        }
+        style={{ top: "10px", right: "10px" }}
+      />
 
       <div className="px-4 sm:px-[3vw] md:px-[5vw] lg:px-[6vw]">
-        <SearchBar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/collection" element={<Collection />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/product/:productId" element={<Product />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/place-order" element={<PlaceOrder />} />
-        <Route path="/verify" element={<Verify />} />
-        <Route path="/orders" element={<Orders />} />
-        <Route path="/profile" element={<Profile />} />
-      </Routes>
-      <Footer />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/collection" element={<Collection />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/product/:productId" element={<Product />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/place-order" element={<PlaceOrder />} />
+          <Route path="/verify" element={<Verify />} />
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/profile" element={<Profile />} />
+        </Routes>
+        <Footer />
       </div>
-
     </div>
   );
 };

@@ -67,10 +67,8 @@ const Orders = ({ token }) => {
               {/* Left Section */}
               <div className="flex items-start gap-4 flex-1">
                 <img
-                  src={
-                    order.items[0]?.image?.[0] || "/default-product.png"
-                  }
-                  alt={order.items[0]?.name || "Product"}
+                  src={order.items[0]?.image || "/default-product.png"}
+                  alt={order.items?.name || "Product"}
                   className="h-26 object-cover rounded"
                 />
                 <div className="space-y-1">
@@ -86,14 +84,22 @@ const Orders = ({ token }) => {
                     {order.address.firstName} {order.address.lastName}
                   </p>
                   <p className="text-gray-500 text-sm">
-                    {order.address.street}, {order.address.city}, {order.address.state}, {order.address.country}, {order.address.zipcode}
+                    {order.address.street}, {order.address.city},{" "}
+                    {order.address.state}, {order.address.country},{" "}
+                    {order.address.zipcode}
                   </p>
                 </div>
               </div>
 
               {/* Right Section */}
               <div className="mt-4 sm:mt-0 flex flex-col sm:items-end gap-2">
-                <p className={`text-sm font-semibold px-2 py-1 rounded ${order.payment ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                <p
+                  className={`text-sm font-semibold px-2 py-1 rounded ${
+                    order.payment
+                      ? "bg-green-100 text-green-700"
+                      : "bg-red-100 text-red-700"
+                  }`}
+                >
                   {order.payment ? "Paid" : "Pending"}
                 </p>
                 <p className="text-gray-700 text-sm">
@@ -106,10 +112,13 @@ const Orders = ({ token }) => {
                   Date: {new Date(order.date).toLocaleDateString()}
                 </p>
                 <p className="text-lg font-bold text-gray-900">
-                  {currency}{order.amount}
+                  {currency}
+                  {order.amount}
                 </p>
                 <select
-                  className={`border rounded cursor-pointer px-3 py-1 text-sm ${statusColors[order.status]} focus:outline-none`}
+                  className={`border rounded cursor-pointer px-3 py-1 text-sm ${
+                    statusColors[order.status]
+                  } focus:outline-none`}
                   value={order.status}
                   onChange={(e) =>
                     handleStatusChange(order._id, e.target.value)

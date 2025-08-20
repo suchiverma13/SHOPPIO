@@ -24,58 +24,67 @@ const Profile = () => {
   const navigate = useNavigate();
 
   // Inside useEffect - fetch user data
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      // 1. First check localStorage
+useEffect(() => {
+  const fetchUserProfile = async () => {
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `${backendUrl}/api/user/profile`,
+        {},
+        { headers: { token } }
+      );
+
+      if (response.data.success) {
+        const fetchedUser = response.data.user;
+
+        setUser(fetchedUser);
+        setFormData({
+          name: fetchedUser.name || "",
+          email: fetchedUser.email || "",
+          mobileNumber: fetchedUser.mobileNumber || "",
+          location: fetchedUser.location || "",
+          nationality: fetchedUser.nationality || "",
+        });
+        setProfileImage(fetchedUser.profilePicture || null);
+
+        // ✅ database data ko localStorage me save karo
+        localStorage.setItem("profileData", JSON.stringify(fetchedUser));
+      } else {
+        toast.error(response.data.message);
+
+        // ❌ Agar backend fail ho, tab localStorage se load karo
+        const localProfile = localStorage.getItem("profileData");
+        if (localProfile) {
+          const data = JSON.parse(localProfile);
+          setUser(data);
+          setFormData(data);
+          setProfileImage(data.profilePicture || null);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to fetch profile data.");
+
+      // ❌ Error ke case me bhi localStorage fallback
       const localProfile = localStorage.getItem("profileData");
       if (localProfile) {
         const data = JSON.parse(localProfile);
         setUser(data);
         setFormData(data);
         setProfileImage(data.profilePicture || null);
-        setLoading(false);
-        return;
       }
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      // 2. Fetch from backend if no localStorage
-      if (!token) {
-        setLoading(false);
-        return;
-      }
+  fetchUserProfile();
+}, [token, backendUrl]);
 
-      try {
-        const response = await axios.post(
-          `${backendUrl}/api/user/profile`,
-          {},
-          { headers: { token } }
-        );
-
-        if (response.data.success) {
-          const fetchedUser = response.data.user;
-          setUser(fetchedUser);
-          setFormData({
-            name: fetchedUser.name || "",
-            email: fetchedUser.email || "",
-            mobileNumber: fetchedUser.mobileNumber || "",
-            location: fetchedUser.location || "",
-            nationality: fetchedUser.nationality || "",
-          });
-          setProfileImage(fetchedUser.profilePicture || null);
-          // Save to localStorage
-          localStorage.setItem("profileData", JSON.stringify(fetchedUser));
-        } else {
-          toast.error(response.data.message);
-        }
-      } catch (error) {
-        console.error(error);
-        toast.error("Failed to fetch profile data.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserProfile();
-  }, [token, backendUrl]);
 
   const handleFormChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

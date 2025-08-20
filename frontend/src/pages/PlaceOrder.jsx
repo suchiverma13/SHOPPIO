@@ -8,8 +8,6 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 const PlaceOrder = () => {
-  
-  
   const [method, setMethod] = useState("cod");
   const {
     navigate,
@@ -34,7 +32,6 @@ const PlaceOrder = () => {
     phone: "",
   });
 
-  
   // Check if cart is empty
   const isCartEmpty =
     Object.keys(cartItems).length === 0 ||
@@ -74,16 +71,19 @@ const PlaceOrder = () => {
 
     try {
       let orderItems = [];
-      for (const items in cartItems) {
-        for (const item in cartItems[items]) {
-          if (cartItems[items][item] > 0) {
-            const itemInfo = structuredClone(
-              products.find((p) => p._id === items)
-            );
-            if (itemInfo) {
-              itemInfo.size = item;
-              itemInfo.quantity = cartItems[items][item];
-              orderItems.push(itemInfo);
+      for (const productId in cartItems) {
+        for (const size in cartItems[productId]) {
+          if (cartItems[productId][size] > 0) {
+            const product = products.find((p) => p._id === productId);
+            if (product) {
+              orderItems.push({
+                productId: product._id, // ✅ required
+                name: product.name,
+                price: product.price,
+                image: product.image[0], // ✅ string instead of array
+                size: size,
+                quantity: cartItems[productId][size],
+              });
             }
           }
         }
@@ -170,7 +170,7 @@ const PlaceOrder = () => {
   return (
     <form
       onSubmit={onSubmitHandler}
-      className="flex flex-col lg:flex-row gap-8 pt-8 sm:pt-14 min-h-[80vh] px-4 sm:px-8"
+      className="flex flex-col lg:flex-row gap-8 min-h-[80vh] px-4 sm:px-8"
     >
       {/* Left Side - Delivery Form */}
       <div className="flex flex-col gap-4 w-full lg:w-1/2">
@@ -183,7 +183,7 @@ const PlaceOrder = () => {
             onChange={onChangeHandler}
             type="text"
             placeholder="First Name"
-            className="flex-1 border rounded px-3 py-2"
+            className="flex-1 border w-1/2 rounded px-3 py-2"
           />
           <input
             name="lastName"
@@ -191,7 +191,7 @@ const PlaceOrder = () => {
             onChange={onChangeHandler}
             type="text"
             placeholder="Last Name"
-            className="flex-1 border rounded px-3 py-2"
+            className="flex-1 border  w-1/2 rounded px-3 py-2"
           />
         </div>
         <input
@@ -220,7 +220,7 @@ const PlaceOrder = () => {
             onChange={onChangeHandler}
             type="text"
             placeholder="City"
-            className="flex-1 border rounded px-3 py-2"
+            className="flex-1 border  w-1/2 rounded px-3 py-2"
           />
           <input
             required
@@ -229,7 +229,7 @@ const PlaceOrder = () => {
             onChange={onChangeHandler}
             type="text"
             placeholder="State"
-            className="flex-1 border rounded px-3 py-2"
+            className="flex-1 border  w-1/2 rounded px-3 py-2"
           />
         </div>
         <div className="flex gap-3">
@@ -240,7 +240,7 @@ const PlaceOrder = () => {
             onChange={onChangeHandler}
             type="number"
             placeholder="Zipcode"
-            className="flex-1 border rounded px-3 py-2"
+            className="flex-1 border  w-1/2 rounded px-3 py-2"
           />
           <input
             required
@@ -249,7 +249,7 @@ const PlaceOrder = () => {
             onChange={onChangeHandler}
             type="text"
             placeholder="Country"
-            className="flex-1 border rounded px-3 py-2"
+            className="flex-1 border  w-1/2 rounded px-3 py-2"
           />
         </div>
         <input

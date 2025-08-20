@@ -8,7 +8,7 @@ const ProductItem = ({ id, image, name, price }) => {
 
   return (
     <Link to={`/product/${id}`} className="block group">
-      <div className="w-full h-52 sm:h-72  overflow-hidden rounded-lg shadow hover:shadow-lg transition-shadow duration-300">
+      <div className="w-full h-62 sm:h-72  overflow-hidden rounded-lg shadow hover:shadow-lg transition-shadow duration-300">
         <img
           src={productImage}
           alt={name}

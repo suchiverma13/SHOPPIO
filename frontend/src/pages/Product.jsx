@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/assets";
 import RelatedProducts from "../components/RelatedProducts";
@@ -11,8 +11,8 @@ const Product = () => {
   const [productData, setProductData] = useState(null);
   const [image, setImage] = useState("");
   const [size, setSize] = useState("");
+  const navigate = useNavigate();
 
-  // Fetch product data based on productId
   useEffect(() => {
     const product = products.find((item) => item._id === productId);
     if (product) {
@@ -28,6 +28,20 @@ const Product = () => {
       </div>
     );
 
+  const handleBuyNow = () => {
+    if (!token) {
+      toast.error("Please login to buy now");
+      return;
+    }
+    if (!size) {
+      toast.error("Please select a size");
+      return;
+    }
+    // Navigate to place-order page with product info and selected size
+    // Use state or query params — here using state
+    navigate("/place-order", { state: { product: productData, size: size } });
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
       {/* Product Section */}
@@ -35,7 +49,7 @@ const Product = () => {
         {/* Product Images */}
         <div className="flex flex-1 flex-col-reverse sm:flex-row gap-4">
           {/* Vertical Thumbnails */}
-           <div className="flex sm:flex-col gap-2 overflow-x-auto sm:overflow-y-auto sm:w-1/5">
+          <div className="flex sm:flex-col gap-2 overflow-x-auto sm:overflow-y-auto sm:w-1/5">
             {productData.image.map((item, index) => (
               <img
                 key={index}
@@ -96,9 +110,7 @@ const Product = () => {
                   key={idx}
                   onClick={() => setSize(s)}
                   className={`px-4 py-2 border cursor-pointer rounded-md transition-all duration-200 hover:border-orange-500 ${
-                    s === size
-                      ? "border-orange-500 bg-orange-50"
-                      : "border-gray-300"
+                    s === size ? "border-orange-500 bg-orange-50" : "border-gray-300"
                   }`}
                 >
                   {s}
@@ -107,24 +119,35 @@ const Product = () => {
             </div>
           </div>
 
-          {/* Add to Cart */}
-          <button
-            onClick={() => {
-              if (!token) {
-                toast.error("Not authorized, login again", { autoClose: 2000 });
-                return;
-              }
-              if (!size) {
-                toast.error("Please select a size", { autoClose: 2000 });
-                return;
-              }
-              addToCart(productData._id, size);
-              toast.success("Item added to cart!", { autoClose: 2000 });
-            }}
-            className="mt-6 bg-black cursor-pointer text-white py-3 px-8 rounded-md hover:bg-gray-800 transition-colors"
-          >
-            Add to Cart
-          </button>
+          {/* Buttons */}
+          <div className="mt-6 flex gap-4">
+            {/* Add to Cart */}
+            <button
+              onClick={() => {
+                if (!token) {
+                  toast.error("Not authorized, login again", { autoClose: 2000 });
+                  return;
+                }
+                if (!size) {
+                  toast.error("Please select a size", { autoClose: 2000 });
+                  return;
+                }
+                addToCart(productData._id, size);
+                toast.success("Item added to cart!", { autoClose: 2000 });
+              }}
+              className="bg-black cursor-pointer text-white py-3 px-8 rounded-md hover:bg-gray-800 transition-colors"
+            >
+              Add to Cart
+            </button>
+
+            {/* Buy Now */}
+            <button
+              onClick={handleBuyNow}
+              className="bg-orange-500 cursor-pointer text-white py-3 px-8 rounded-md hover:bg-orange-600 transition-colors"
+            >
+              Buy Now
+            </button>
+          </div>
 
           {/* Product Highlights */}
           <div className="mt-8 text-gray-500 text-sm flex flex-col gap-1">

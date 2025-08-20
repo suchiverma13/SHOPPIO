@@ -60,7 +60,7 @@ const Orders = () => {
     );
 
   return (
-    <div className="border-t pt-16 px-4 max-w-7xl mx-auto">
+    <div className="border-t px-4 max-w-7xl mx-auto">
       <div className="text-2xl mb-6">
         <Title text1={"MY"} text2={"ORDERS"} />
       </div>
@@ -73,7 +73,7 @@ const Orders = () => {
           >
             {/* Left side: Product Info */}
             <div className="flex items-start gap-4 md:gap-6 text-sm md:text-base">
-              <img src={item.image[0]} className="w-16 sm:w-20 rounded-lg" alt={item.name} />
+              <img src={item.image} className="w-16 sm:w-20 rounded-lg" alt={item.name} />
               <div className="flex flex-col gap-1">
                 <p className="font-medium">{item.name}</p>
                 <div className="flex items-center gap-3 text-gray-700">
