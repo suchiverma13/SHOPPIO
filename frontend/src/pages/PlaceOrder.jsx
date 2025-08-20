@@ -1,16 +1,17 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ShopContext } from "../context/ShopContext";
 import Title from "../components/Title";
 import CartTotal from "../components/CartTotal";
 import { assets } from "../assets/assets";
-import { ShopContext } from "../context/ShopContext";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
+
 const PlaceOrder = () => {
-  const [method, setMethod] = useState("cod");
+  const location = useLocation();
+  const navigate = useNavigate();
   const {
-    navigate,
     backendUrl,
     token,
     cartItems,
@@ -20,6 +21,7 @@ const PlaceOrder = () => {
     products,
   } = useContext(ShopContext);
 
+  const [method, setMethod] = useState("cod");
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -32,12 +34,47 @@ const PlaceOrder = () => {
     phone: "",
   });
 
-  // Check if cart is empty
-  const isCartEmpty =
-    Object.keys(cartItems).length === 0 ||
-    Object.values(cartItems).every((item) =>
-      Object.values(item).every((qty) => qty === 0)
-    );
+  // If "Buy Now" product and size passed from Product page
+  const [orderItems, setOrderItems] = useState([]);
+
+  useEffect(() => {
+    if (location.state && location.state.product && location.state.size) {
+      const { product, size } = location.state;
+      setOrderItems([
+        {
+          productId: product._id,
+          name: product.name,
+          price: product.price,
+          image: product.image[0],
+          size: size,
+          quantity: 1,
+        },
+      ]);
+    } else {
+      // Normal cart order flow
+      let items = [];
+      for (const productId in cartItems) {
+        for (const sizeKey in cartItems[productId]) {
+          if (cartItems[productId][sizeKey] > 0) {
+            const product = products.find((p) => p._id === productId);
+            if (product) {
+              items.push({
+                productId: product._id,
+                name: product.name,
+                price: product.price,
+                image: product.image[0],
+                size: sizeKey,
+                quantity: cartItems[productId][sizeKey],
+              });
+            }
+          }
+        }
+      }
+      setOrderItems(items);
+    }
+  }, [location.state, cartItems, products]);
+
+  const isCartEmpty = orderItems.length === 0;
 
   const onChangeHandler = (e) =>
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -64,35 +101,21 @@ const PlaceOrder = () => {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+
     if (isCartEmpty) {
       toast.error("Your cart is empty!");
       return;
     }
 
     try {
-      let orderItems = [];
-      for (const productId in cartItems) {
-        for (const size in cartItems[productId]) {
-          if (cartItems[productId][size] > 0) {
-            const product = products.find((p) => p._id === productId);
-            if (product) {
-              orderItems.push({
-                productId: product._id, // ✅ required
-                name: product.name,
-                price: product.price,
-                image: product.image[0], // ✅ string instead of array
-                size: size,
-                quantity: cartItems[productId][size],
-              });
-            }
-          }
-        }
-      }
+      const amount =
+        orderItems.reduce((acc, item) => acc + item.price * item.quantity, 0) +
+        delivery_fee;
 
       const orderData = {
         address: formData,
         items: orderItems,
-        amount: getCartAmount() + delivery_fee,
+        amount: amount,
       };
 
       switch (method) {
@@ -138,13 +161,6 @@ const PlaceOrder = () => {
       toast.error(error.message);
     }
   };
-
-  const [showPopup, setShowPopup] = useState(false);
-  useEffect(() => {
-    if (!token) {
-      setShowPopup(true);
-    }
-  }, [token]);
 
   if (isCartEmpty)
     return (
@@ -306,9 +322,7 @@ const PlaceOrder = () => {
                   method === "cod" ? "bg-green-400" : ""
                 }`}
               ></span>
-              <p className="text-black-500 text-sm font-medium">
-                Cash on Delivery
-              </p>
+              <p className="text-black-500 text-sm font-medium">Cash on Delivery</p>
             </div>
           </div>
           <button

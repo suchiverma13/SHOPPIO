@@ -8,6 +8,58 @@ const createToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET)
 }
 
+ const getProfile = async (req, res) => {
+    try {
+        const userId = req.user.id; // Assume auth middleware sets req.user
+        const user = await userModel.findById(userId);
+        if (!user) return res.status(404).json({ success: false, message: "User not found" });
+        res.json({ success: true, user });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+ const updateProfile = async (req, res) => {
+    try {
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({ success: false, message: "Not Authorized" });
+        }
+        const userId = req.user.id;
+        const {
+            name,
+            email,
+            phone,
+            nationality,
+            location,
+            profilePicture,
+        } = req.body;
+
+        const updateData = {
+            name,
+            email,
+            phone,
+            nationality,
+            profilePicture,
+            location,
+        };
+
+        // Clean undefined fields
+        Object.keys(updateData).forEach(key => {
+            if (updateData[key] === undefined) delete updateData[key];
+        });
+
+        const updatedUser = await userModel.findByIdAndUpdate(userId, updateData, {
+            new: true,
+        });
+
+        if (!updatedUser) return res.status(404).json({ success: false, message: "User not found" });
+
+        res.json({ success: true, user: updatedUser, message: "Profile updated successfully" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+};
 // user login route
 const loginUser = async (req, res) => {
     try {
@@ -90,8 +142,11 @@ const adminLogin = async (req, res) => {
 // New function to get user profile
 const userProfile = async (req, res) => {
     try {
-        const userId = req.body.userId;
-        const user = await userModel.findById(userId).select('-password');
+        const userId = req.user?.id;
+        if (!userId) {
+            return res.status(401).json({ success: false, message: "Unauthorized" });
+        }
+        const user = await userModel.findById(userId).select("-password");
         if (!user) {
             return res.json({ success: false, message: "User not found" });
         }
@@ -102,4 +157,4 @@ const userProfile = async (req, res) => {
     }
 };
 
-export { loginUser, registerUser, adminLogin, userProfile };
+export { loginUser, registerUser, adminLogin, userProfile, updateProfile };

@@ -38,7 +38,6 @@ const Product = () => {
       return;
     }
     // Navigate to place-order page with product info and selected size
-    // Use state or query params — here using state
     navigate("/place-order", { state: { product: productData, size: size } });
   };
 
@@ -110,7 +109,9 @@ const Product = () => {
                   key={idx}
                   onClick={() => setSize(s)}
                   className={`px-4 py-2 border cursor-pointer rounded-md transition-all duration-200 hover:border-orange-500 ${
-                    s === size ? "border-orange-500 bg-orange-50" : "border-gray-300"
+                    s === size
+                      ? "border-orange-500 bg-orange-50"
+                      : "border-gray-300"
                   }`}
                 >
                   {s}
@@ -125,7 +126,9 @@ const Product = () => {
             <button
               onClick={() => {
                 if (!token) {
-                  toast.error("Not authorized, login again", { autoClose: 2000 });
+                  toast.error("Not authorized, login again", {
+                    autoClose: 2000,
+                  });
                   return;
                 }
                 if (!size) {

@@ -14,26 +14,29 @@ import dashboardRouter from './routes/dashboardRoute.js'
 import adminRoutes from "./routes/adminRoutes.js";
 
 // App Config
-const app =express()
-const port =process.env.PORT ||4000
+const app = express()
+const port = process.env.PORT || 4000
 connectDB()
 connectCloudinary()
 
-// Middlewares
+
 app.use(express.json())
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ limit: "10mb", extended: true }));
+// Middlewares
 app.use(cors())
 
 // API endpoint
-app.use('/api/user',userRouter)
-app.use('/api/product',productRouter)
-app.use('/api/cart',cartRouter)
-app.use('/api/order',orderRouter)
+app.use('/api/user', userRouter)
+app.use('/api/product', productRouter)
+app.use('/api/cart', cartRouter)
+app.use('/api/order', orderRouter)
 
-app.get('/',(req,res)=>{
+app.get('/', (req, res) => {
     res.send("API WORKING")
 })
 
 app.use("/api/admin", adminRoutes);
 
-app.listen(port,()=>console.log('server started at port number:'+port))
+app.listen(port, () => console.log('server started at port number:' + port))
 
